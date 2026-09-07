@@ -1,0 +1,18 @@
+_format_version: "3.0"
+_transform: true
+
+services:
+  - name: demo-service
+    url: http://example.internal:8080
+    routes:
+      - name: demo-route
+        paths:
+          - /demo
+        strip_path: true
+
+plugins:
+  - name: correlation-id
+    config:
+      header_name: X-Correlation-ID
+      generator: uuid
+      echo_downstream: true

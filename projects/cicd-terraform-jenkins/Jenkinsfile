@@ -1,0 +1,19 @@
+pipeline {
+  agent any
+  environment {
+    TF_IN_AUTOMATION = 'true'
+  }
+  stages {
+    stage('Checkout') { steps { checkout scm } }
+    stage('Terraform Format') { steps { sh 'terraform fmt -check -recursive' } }
+    stage('Terraform Validate') { steps { sh 'terraform validate' } }
+    stage('Terraform Plan') { steps { sh 'terraform plan -out=tfplan' } }
+    stage('Deploy') {
+      when { branch 'main' }
+      steps { input message: 'Approve infrastructure deployment?' ; sh 'terraform apply -auto-approve tfplan' }
+    }
+  }
+  post {
+    always { echo 'CI/CD pipeline completed. Review build and deployment logs.' }
+  }
+}

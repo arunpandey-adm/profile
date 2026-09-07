@@ -1,0 +1,24 @@
+name: Portfolio Validation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate Markdown links and structure
+        run: |
+          test -f README.md
+          test -d projects
+          find projects -name README.md -print | sort
+
+      - name: Validate Python syntax
+        run: |
+          python -m compileall projects/devops-automation-python-boto3/src projects/ai-devops-assistant/src
